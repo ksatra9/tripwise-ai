@@ -325,6 +325,6 @@ The backend creates its tables and loads demo seed records during startup. The d
 
 A simple low-cost hosting layout is one static frontend service plus one small Python web service, with a persistent disk for SQLite if the free/low-cost tier supports it. Configure the frontend API URL and backend CORS origin as above. Confirm each provider's current pricing, sleep behavior, and persistent storage limits before choosing a plan. No deployment has been performed from this repository.
 
-###TripWise AI — Live Demo
+**TripWise AI — Live Demo**
 
 https://tripwise-ai-1-qaoc.onrender.com/
