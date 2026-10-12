@@ -310,9 +310,12 @@ Verifies:
   "alternatives": [],
   "ai_explanation": "We recommend Rishikesh, Uttarakhand as the ideal match for your 3-day trip from Delhi with 2 travellers. The total estimated trip cost is ₹15,356, leaving a safe financial headroom of ₹4,644 within your ₹20,000 budget.",
   "disclaimer": "Estimated prices; confirm before booking. All hotel, restaurant, and transport rates are sample or historical estimates, not live verified bookable quotes."
+
+
+
+
 }
 ```
-
 
 ## Production Configuration and Deployment
 
@@ -322,6 +325,7 @@ The backend creates its tables and loads demo seed records during startup. The d
 
 A simple low-cost hosting layout is one static frontend service plus one small Python web service, with a persistent disk for SQLite if the free/low-cost tier supports it. Configure the frontend API URL and backend CORS origin as above. Confirm each provider's current pricing, sleep behavior, and persistent storage limits before choosing a plan. No deployment has been performed from this repository.
 
+<<<<<<< HEAD
 
 ## 📸 Screenshots
 
@@ -332,10 +336,12 @@ A simple low-cost hosting layout is one static frontend service plus one small P
 ![TripWise AI - Budget Breakdown](screenshots/budget-breakdown.png)
 (screenshots/budget-breakdown1.png)
 
-## 🌐 Live Demo
-
-[**Try TripWise AI**](https://tripwise-ai-1-qaoc.onrender.com)
 
 ## 💻 Source Code
 
 [View TripWise AI on GitHub](https://github.com/ksatra9/tripwise-ai)
+=======
+**TripWise AI — Live Demo**
+
+https://tripwise-ai-1-qaoc.onrender.com/
+>>>>>>> 8d732dcd952c2b88ec04f96cec9a6d09be68dc05
