@@ -19,7 +19,7 @@ export const DataDisclaimerBadge: React.FC<DataDisclaimerBadgeProps> = ({
   let badgeColor = "bg-amber-50 text-amber-800 border-amber-200";
 
   if (status === 'verified_snapshot') {
-    badgeLabel = "Verified Snapshot";
+    badgeLabel = "Source Snapshot";
     badgeColor = "bg-emerald-50 text-emerald-800 border-emerald-200";
   } else if (status === 'historical') {
     badgeLabel = "Historical Data";

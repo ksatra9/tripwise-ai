@@ -20,7 +20,7 @@ export const AlternativesList: React.FC<AlternativesListProps> = ({
           Alternative Affordable Destinations
         </h4>
         <p className="text-xs text-slate-500">
-          Also strictly within your budget with verified routes and accommodation
+          Estimated trip costs fit your budget based on available dataset records
         </p>
       </div>
 

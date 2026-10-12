@@ -1,6 +1,7 @@
+/// <reference types="vite/client" />
 import { PlanResponse, Destination } from '../types/travel';
 
-const API_BASE = '/api';
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '') + '/api';
 
 export async function planTrip(prompt: string): Promise<PlanResponse> {
   try {

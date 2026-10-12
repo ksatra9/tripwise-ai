@@ -1,6 +1,6 @@
 # TripWise AI — Personalized Travel Itinerary Recommendation System
 
-A full-stack, budget-honest travel recommendation platform focused on travel within India. The system takes **one natural language trip request** through a single free-text input box, extracts validated preferences via Google Gemini (with an autonomous deterministic regex/NLP fallback), enforces a **strict mathematical affordability filter**, and generates a transparent, day-by-day itinerary with verified local establishments and itemized costs.
+A full-stack, budget-honest travel recommendation platform focused on travel within India. The system takes **one natural language trip request** through a single free-text input box, extracts validated preferences via Google Gemini (with an autonomous deterministic regex/NLP fallback), enforces a **strict mathematical affordability filter**, and generates a transparent, day-by-day itinerary from records available in its local database, with itemized estimates.
 
 ---
 
@@ -8,8 +8,8 @@ A full-stack, budget-honest travel recommendation platform focused on travel wit
 
 1. **Hard Affordability Filter**: The total estimated trip cost never exceeds the user's stated total budget. Candidates exceeding budget are strictly rejected before ranking.
 2. **True Full-Trip Cost Math**: Costs are calculated in pure integer INR for the **entire trip** and **all travellers combined**, including round-trip transit, hotel rooms ($\lceil\text{travellers} / 2\rceil \times \text{nights}$), meals ($3\times\text{travellers}\times\text{days}$), attraction entry tickets, local transfers, and a mandatory **10% emergency contingency reserve**.
-3. **Zero Hallucinated Rates or Establishments**: Python code—not the LLM—performs all arithmetic, affordability filtering, and scoring. The LLM is strictly constrained to approved database entities with an autonomous grounded validation guard.
-4. **Honest Data Attribution**: Every price record displays its `data_status` (`demo`, `historical`, `verified_snapshot`, or `live_quote`), price unit, and checked date. Sample seed records are visibly tagged: `"Demo data — illustrative estimates, not verified listings or bookable prices."`
+3. **Grounded recommendations**: Python performs arithmetic, affordability filtering, and scoring. Recommendations are based on records in the local database; this does not make their prices, ratings, availability, or establishments independently verified.
+4. **Honest Data Attribution**: Price records can be labeled `demo`, `historical`, `verified_snapshot`, or `live_quote`, with price unit and checked date when available. These labels are only as reliable as the imported source data. Sample seed records are visibly tagged: `"Demo data — illustrative estimates, not verified listings or bookable prices."`
 5. **Targeted Clarification**: If essential information (origin, budget, duration, or party size) is missing or budget scope is ambiguous (per person vs total), the system asks **exactly ONE targeted question** instead of guessing.
 6. **Graceful No-Trip-Found View**: When no option fits an impossible budget, constructive adjustments (minimum required budget, reduced duration, or nearer hubs) are suggested.
 
@@ -36,7 +36,7 @@ RS MINI/
 │   │   │   ├── plan.py               # POST /api/plan
 │   │   │   └── destinations.py       # GET /api/destinations, GET /api/destinations/{id}
 │   │   ├── main.py                   # FastAPI app, CORS middleware, lifespan startup & seed trigger
-│   │   └── seed_data.py              # 5 rich destinations (Rishikesh, Jaipur, Agra, Goa, Kochi) with verified routes
+│   │   └── seed_data.py              # 5 rich destinations (Rishikesh, Jaipur, Agra, Goa, Kochi) with route estimates
 │   ├── tests/
 │   │   ├── conftest.py               # In-memory SQLite with StaticPool & TestClient fixtures
 │   │   ├── test_extraction.py        # Example prompt, missing budget, ambiguous scope, LLM fallback
@@ -104,13 +104,15 @@ $$\text{Hard Filter}: \quad \text{Total Trip Cost} \le \text{User Stated Budget}
 ## Recommendation & Scoring Algorithm
 
 Affordable candidates are ranked using an interpretable composite score $[0, 100]$:
-- **Interest Match (35%)**: Jaccard overlap between requested interests (nature, food, culture, adventure, spiritual, beach) and destination/attraction categories.
-- **Budget Headroom & Value (20%)**: Rewards trips that leave a comfortable financial buffer (5% to 40% unspent cushion) without leaving excessive funds unused.
-- **Season Suitability (15%)**: Match between destination's `best_seasons` and visiting window.
-- **Travel Convenience (15%)**: Shorter transit time from origin city.
-- **Itinerary Variety & Popularity (15%)**: Diversity and rating of available sights.
+- **Interest Match (35%)**: Share of requested interests found in destination and attraction text.
+- **Tier Fit (25%)**: Alignment with the budget tier and transport preference.
+- **Budget Headroom (20%)**: Rewards some remaining budget while limiting excessive unused budget.
+- **Travel Convenience (10%)**: Heuristic based on transport mode and estimated duration.
+- **Season Suitability (10%)**: Heuristic based on the destination season text.
 
-Every response exposes the exact `score_breakdown` for auditing and transparency.
+The response also reports `itinerary_variety`, based on the number of available attraction records (up to five); this diagnostic does not affect the composite score.
+
+Every response exposes score components for inspection; the component values and weights should be treated as heuristic, not objective quality measurements.
 
 ---
 
@@ -310,3 +312,12 @@ Verifies:
   "disclaimer": "Estimated prices; confirm before booking. All hotel, restaurant, and transport rates are sample or historical estimates, not live verified bookable quotes."
 }
 ```
+
+
+## Production Configuration and Deployment
+
+The application is a separate FastAPI API and Vite static frontend. The Vite `/api` proxy only applies during development; production frontend deployments need either a same-origin reverse proxy or `VITE_API_BASE_URL` set at build time to the public API origin (for example, `https://api.example.com`). Set the backend `CORS_ORIGINS` environment variable to a JSON array containing the exact frontend origin(s), such as `["https://tripwise.example.com"]`. Wildcard origins are not enabled. Keep API keys in the backend host's environment settings; never commit `.env` files.
+
+The backend creates its tables and loads demo seed records during startup. The default SQLite file is at the repository root for local use. For hosted deployment, provide a persistent volume and set `DATABASE_URL` to its SQLite path (for example, `sqlite:////var/data/travel_app.db`), or configure a supported SQLAlchemy database URL. Ephemeral container filesystems can lose SQLite data on restart. Start the API with `python -m uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT`; the frontend static output is produced by `cd frontend && npm ci && npm run build` and is in `frontend/dist`. Set `GEMINI_API_KEY` only if using Gemini-assisted extraction/explanations; deterministic fallback remains available without it.
+
+A simple low-cost hosting layout is one static frontend service plus one small Python web service, with a persistent disk for SQLite if the free/low-cost tier supports it. Configure the frontend API URL and backend CORS origin as above. Confirm each provider's current pricing, sleep behavior, and persistent storage limits before choosing a plan. No deployment has been performed from this repository.

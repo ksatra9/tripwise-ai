@@ -144,7 +144,7 @@ export const App: React.FC = () => {
             TripWise AI — Personalized Travel Itinerary Recommendation System
           </p>
           <p className="max-w-2xl mx-auto text-[11px] text-slate-400">
-            Powered by Python integer cost math, verified Kaggle tourism datasets, and Google Gemini NLP. 
+            Powered by Python integer cost math, Kaggle and sample tourism datasets, and Google Gemini NLP.
             All accommodation and restaurant prices are illustrative estimates. Always confirm rates with operators before booking.
           </p>
         </div>

@@ -30,7 +30,7 @@ def seed_database(db: Session = None):
             import_all_datasets(db)
             return
 
-        logger.info("Seeding database with verified demo destinations and routes...")
+        logger.info("Seeding database with demo destinations and route estimates...")
 
         # -------------------------------------------------------------------------
         # 1. RISHIKESH (Uttarakhand) - Nature, Adventure, Spirituality, Local Food

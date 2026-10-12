@@ -3,7 +3,7 @@ import { Compass, CheckCircle2, CircleDashed } from 'lucide-react';
 
 const STEPS = [
   "Parsing destination intent & party requirements...",
-  "Querying verified transport routes from your origin...",
+  "Checking available transport records from your origin...",
   "Applying room capacity ceiling formula & hotel rates...",
   "Enforcing hard budget filter & 10% contingency buffer...",
   "Assembling day-by-day itinerary & local dining picks..."

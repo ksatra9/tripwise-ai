@@ -46,7 +46,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center gap-3">
           <div className="hidden md:flex items-center gap-1.5 text-xs text-slate-600 bg-stone-100/80 px-3 py-1.5 rounded-lg border border-stone-200/60">
             <ShieldCheck className="w-4 h-4 text-teal-600" />
-            <span>Zero Hallucinated Rates</span>
+            <span>Estimate-based recommendations</span>
           </div>
 
           {showReset && (

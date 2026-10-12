@@ -33,7 +33,7 @@ def generate_template_explanation(
         f"all meals & dining (₹{cost.food_inr:,}), local transit (₹{cost.local_transport_inr:,}), entry passes (₹{cost.attractions_inr:,}), "
         f"and an essential 10% contingency buffer (₹{cost.contingency_inr:,}).",
 
-        f"During your visit, you'll experience iconic attractions including {sights_str}, alongside local cuisine at verified spots like "
+        f"During your visit, you'll experience iconic attractions including {sights_str}, alongside local cuisine at listed places such as "
         f"{', '.join([r.name for r in candidate.recommended_restaurants[:2]]) if candidate.recommended_restaurants else 'local eateries'}."
     ]
 

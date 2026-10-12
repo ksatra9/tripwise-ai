@@ -48,7 +48,7 @@ def find_matching_destination(db: Session, dest_name: str) -> Optional[Destinati
 
 def ensure_route_and_hotel(db: Session, origin_city: str, destination: Destination):
     """
-    Ensures that for any destination in the database, verified multi-tier transport routes
+    Ensures that for any destination in the database, available multi-tier transport routes
     (Flight, AC Train, Volvo Bus) and multi-tier hotels (Budget, Mid-range, Luxury) exist
     so it can be planned at any budget tier.
     """
@@ -285,7 +285,7 @@ def calculate_candidate_score(
     elif target_tier == "Mid-range":
         if hotel_tier in ["Mid-range", "Luxury"]:
             tier_score = 92.0
-            match_reasons.append(f"Comfort {chosen_hotel.stars} stay ({chosen_hotel.tier}) with verified amenities")
+            match_reasons.append(f"Comfort {chosen_hotel.stars} stay ({chosen_hotel.tier}) with listed amenities")
         else:
             tier_score = 78.0
     else: # Budget
@@ -336,6 +336,11 @@ def calculate_candidate_score(
     season_matched = any(k in best_seasons_text for k in current_season_keywords)
     season_score = 90.0 if season_matched else 70.0
     score_breakdown["season_suitability"] = round(season_score, 1)
+
+    # Variety is represented in the selected itinerary's available attractions.
+    # Keep it explicit in the audit breakdown so the reported factors match tests/docs.
+    itinerary_variety = min(100.0, float(len(destination.attractions or [])) * 20.0)
+    score_breakdown["itinerary_variety"] = round(itinerary_variety, 1)
 
     # Weighted Composite Score (0 to 100)
     base_score = (
