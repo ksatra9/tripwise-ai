@@ -1,0 +1,111 @@
+destination,state,category,best_season,months_best_for,avg_budget_inr_per_person,avg_trip_duration_days,crowd_level,temperature_range_c,nearest_major_city,popular_with,region
+Kedarnath,Uttarakhand,Spiritual,Summer,May-Jun,8000,4,High,5-15,Dehradun,Families;Pilgrims,North
+Rishikesh,Uttarakhand,Adventure;Spiritual,Summer,Mar-Jun,6000,3,High,20-35,Dehradun,Solo;Couples;Groups,North
+Badrinath,Uttarakhand,Spiritual,Summer,May-Jun,9000,4,High,5-18,Dehradun,Families;Pilgrims,North
+Manali,Himachal Pradesh,Adventure;Hill Station,Summer,May-Jun,10000,5,High,10-25,Chandigarh,Couples;Groups,North
+Shimla,Himachal Pradesh,Hill Station,Summer,Apr-Jun,9000,4,High,15-28,Chandigarh,Families,North
+Spiti Valley,Himachal Pradesh,Adventure,Summer,Jun-Sep,12000,7,Low,5-20,Manali,Solo;Adventure,North
+Dharamshala,Himachal Pradesh,Hill Station;Spiritual,Summer,Mar-Jun,7000,4,Medium,12-25,Chandigarh,Solo;Couples,North
+Kasol,Himachal Pradesh,Adventure;Nature,Summer,Apr-Jun,5000,4,Medium,10-22,Chandigarh,Solo;Groups,North
+Nainital,Uttarakhand,Hill Station,Summer,Apr-Jun,7000,3,High,12-25,Dehradun,Families,North
+Mussoorie,Uttarakhand,Hill Station,Summer,Apr-Jun,8000,3,High,15-28,Dehradun,Couples;Families,North
+Leh Ladakh,Jammu & Kashmir,Adventure,Summer,Jun-Sep,18000,7,Medium,5-25,Jammu,Solo;Adventure;Couples,North
+Varanasi,Uttar Pradesh,Spiritual;Cultural,Winter,Oct-Mar,5000,3,High,10-25,Lucknow,Families;Pilgrims;Solo,North
+Agra,Uttar Pradesh,Cultural,Winter,Oct-Mar,6000,2,High,12-28,Delhi,Families;Couples,North
+Jaipur,Rajasthan,Cultural,Winter,Oct-Mar,7000,3,High,12-25,Delhi,Families;Couples,North
+Jaisalmer,Rajasthan,Adventure;Cultural,Winter,Oct-Feb,9000,3,Medium,12-25,Jodhpur,Couples;Groups,North
+Jodhpur,Rajasthan,Cultural,Winter,Oct-Mar,7000,2,Medium,14-28,Jodhpur,Families;Couples,North
+Pushkar,Rajasthan,Spiritual;Cultural,Winter,Oct-Mar,5000,2,Medium,12-26,Jaipur,Solo;Couples,North
+Udaipur,Rajasthan,Cultural,Winter,Oct-Mar,9000,3,High,14-30,Udaipur,Couples;Families,North
+Bikaner,Rajasthan,Cultural,Winter,Oct-Feb,5000,2,Low,12-26,Jodhpur,Families,North
+Amritsar,Punjab,Spiritual;Cultural,Winter,Oct-Mar,5000,2,High,10-28,Amritsar,Families;Pilgrims,North
+Haridwar,Uttarakhand,Spiritual,Summer,Mar-Jun,4000,2,High,18-35,Dehradun,Families;Pilgrims,North
+Vrindavan,Uttar Pradesh,Spiritual,Winter,Oct-Mar,4000,2,High,12-28,Agra,Families;Pilgrims,North
+Ayodhya,Uttar Pradesh,Spiritual,Winter,Oct-Mar,4000,2,High,12-30,Lucknow,Families;Pilgrims,North
+Mathura,Uttar Pradesh,Spiritual,Winter,Oct-Mar,4000,2,High,12-30,Agra,Families;Pilgrims,North
+Prayagraj,Uttar Pradesh,Spiritual,Winter,Oct-Mar,4500,2,High,12-30,Lucknow,Families;Pilgrims,North
+Jim Corbett,Uttarakhand,Wildlife,Winter,Nov-Feb,12000,3,Medium,8-25,Delhi,Families;Groups,North
+Ranthambore,Rajasthan,Wildlife,Winter,Oct-Apr,15000,3,Medium,12-30,Jaipur,Families;Groups,North
+Goa,Goa,Beach,Winter,Nov-Feb,12000,5,High,25-32,Goa,Solo;Couples;Groups,West
+Alibaug,Maharashtra,Beach,Winter,Oct-Mar,6000,2,Medium,24-32,Mumbai,Couples;Families,West
+Lonavala,Maharashtra,Hill Station,Monsoon,Jun-Sep,5000,2,High,20-28,Pune,Families;Couples,West
+Mahabaleshwar,Maharashtra,Hill Station,Summer,Mar-Jun,7000,3,High,15-28,Pune,Families;Couples,West
+Aurangabad,Maharashtra,Cultural,Winter,Oct-Mar,6000,3,Medium,16-30,Pune,Families,West
+Pune,Maharashtra,Cultural,Winter,Oct-Mar,8000,3,Medium,18-30,Pune,Solo;Couples,West
+Mumbai,Maharashtra,Cultural;Beach,Winter,Nov-Feb,15000,4,High,22-32,Mumbai,Solo;Families;Groups,West
+Nashik,Maharashtra,Spiritual;Wine,Winter,Oct-Mar,6000,2,Medium,16-30,Mumbai,Families;Groups,West
+Daman,Daman & Diu,Beach,Winter,Nov-Feb,6000,2,Medium,24-32,Surat,Couples;Groups,West
+Dwarka,Gujarat,Spiritual,Winter,Oct-Mar,5000,2,Medium,18-32,Ahmedabad,Families;Pilgrims,West
+Rann of Kutch,Gujarat,Cultural;Nature,Winter,Nov-Feb,10000,3,High,15-28,Bhuj,Families;Couples,West
+Sasan Gir,Gujarat,Wildlife,Winter,Dec-Mar,12000,3,Medium,18-30,Rajkot,Families;Groups,West
+Ahmedabad,Gujarat,Cultural,Winter,Oct-Mar,6000,2,Medium,18-30,Ahmedabad,Families,West
+Kerala Backwaters,Kerala,Nature,Winter,Sep-Mar,14000,4,High,25-32,Kochi,Couples;Families,South
+Munnar,Kerala,Hill Station,Summer,Mar-Jun,9000,3,High,12-22,Kochi,Couples;Families,South
+Wayanad,Kerala,Nature;Adventure,Summer,Mar-Jun,8000,3,Medium,18-28,Kozhikode,Couples;Families,South
+Varkala,Kerala,Beach;Spiritual,Winter,Oct-Mar,8000,3,Medium,24-32,Thiruvananthapuram,Solo;Couples,South
+Thekkady,Kerala,Wildlife;Nature,Winter,Oct-Mar,9000,3,Medium,15-25,Kochi,Families;Couples,South
+Kovalam,Kerala,Beach,Winter,Oct-Mar,9000,3,Medium,26-32,Thiruvananthapuram,Couples;Solo,South
+Ooty,Tamil Nadu,Hill Station,Summer,Mar-Jun,8000,3,High,12-22,Coimbatore,Families,South
+Kodaikanal,Tamil Nadu,Hill Station,Summer,Apr-Jun,8000,3,Medium,12-22,Madurai,Couples;Families,South
+Madurai,Tamil Nadu,Spiritual;Cultural,Winter,Oct-Mar,6000,3,Medium,22-32,Madurai,Families;Pilgrims,South
+Chennai,Tamil Nadu,Cultural;Beach,Winter,Nov-Feb,10000,3,High,22-30,Chennai,Families,South
+Pondicherry,Tamil Nadu,Cultural;Beach,Winter,Nov-Mar,8000,3,High,24-32,Chennai,Solo;Couples,South
+Coorg,Karnataka,Nature;Hill Station,Summer,Mar-Jun,10000,3,High,15-25,Mysuru,Couples;Families,South
+Mysuru,Karnataka,Cultural,Winter,Oct-Mar,7000,3,High,18-28,Mysuru,Families;Couples,South
+Hampi,Karnataka,Cultural,Winter,Oct-Mar,6000,3,Medium,20-30,Bengaluru,Solo;Couples,South
+Gokarna,Karnataka,Beach;Spiritual,Winter,Nov-Feb,6000,3,Medium,24-32,Goa,Solo;Groups,South
+Chikmagalur,Karnataka,Nature;Hill Station,Summer,Mar-Jun,9000,3,Medium,15-25,Bengaluru,Couples,South
+Bengaluru,Karnataka,Cultural,All-year,Jan-Dec,12000,3,High,18-28,Bengaluru,Solo;Groups,South
+Hyderabad,Telangana,Cultural,Winter,Oct-Mar,10000,3,High,18-30,Hyderabad,Families,South
+Tirupati,Andhra Pradesh,Spiritual,All-year,Jan-Dec,5000,2,High,22-32,Chennai,Families;Pilgrims,South
+Araku Valley,Andhra Pradesh,Nature;Hill Station,Summer,Mar-Jun,7000,3,Low,18-28,Visakhapatnam,Families,South
+Vizag,Andhra Pradesh,Beach;Nature,Winter,Oct-Mar,7000,3,Medium,22-30,Visakhapatnam,Families,South
+Darjeeling,West Bengal,Hill Station,Summer,Mar-Jun,9000,4,High,8-18,Siliguri,Couples;Families,East
+Sikkim,Sikkim,Nature;Adventure,Summer,Mar-Jun,12000,5,Medium,8-20,Siliguri,Solo;Couples,East
+Pelling,Sikkim,Nature,Summer,Mar-Jun,10000,3,Low,8-18,Siliguri,Couples,East
+Kolkata,West Bengal,Cultural,Winter,Oct-Mar,9000,3,High,18-28,Kolkata,Families;Solo,East
+Sundarbans,West Bengal,Wildlife,Winter,Nov-Feb,12000,3,Medium,16-28,Kolkata,Families;Groups,East
+Puri,Odisha,Spiritual;Beach,Winter,Oct-Mar,6000,3,High,20-30,Bhubaneswar,Families;Pilgrims,East
+Konark,Odisha,Cultural,Winter,Oct-Mar,5000,2,Medium,20-30,Bhubaneswar,Families,East
+Bhubaneswar,Odisha,Cultural;Spiritual,Winter,Oct-Mar,6000,3,Medium,18-30,Bhubaneswar,Families,East
+Chilika Lake,Odisha,Nature;Wildlife,Winter,Nov-Feb,7000,2,Medium,18-28,Bhubaneswar,Families,East
+Bhubneswar Tribal Circuit,Odisha,Cultural,Winter,Oct-Mar,8000,4,Low,18-28,Bhubaneswar,Solo,East
+Shillong,Meghalaya,Nature;Hill Station,Summer,Mar-Jun,9000,4,Medium,12-22,Guwahati,Solo;Couples,Northeast
+Cherrapunji,Meghalaya,Nature,Monsoon,Jun-Sep,8000,3,Medium,12-22,Guwahati,Solo;Groups,Northeast
+Kaziranga,Assam,Wildlife,Winter,Nov-Apr,12000,3,Medium,12-28,Guwahati,Families;Groups,Northeast
+Guwahati,Assam,Cultural;Spiritual,All-year,Jan-Dec,6000,2,Medium,18-30,Guwahati,Families,Northeast
+Majuli,Assam,Cultural;Nature,Winter,Oct-Mar,7000,3,Low,14-26,Guwahati,Solo;Couples,Northeast
+Tawang,Arunachal Pradesh,Spiritual;Adventure,Summer,Apr-Jun,14000,6,Low,5-18,Guwahati,Solo;Adventure,Northeast
+Ziro Valley,Arunachal Pradesh,Nature;Cultural,Summer,Apr-Jun,11000,4,Low,12-22,Guwahati,Solo,Northeast
+Imphal,Manipur,Cultural;Nature,Winter,Oct-Mar,10000,4,Low,12-25,Guwahati,Solo,Northeast
+Kohima,Nagaland,Cultural,Winter,Oct-Mar,10000,3,Low,12-22,Guwahati,Solo,Northeast
+Gangtok,Sikkim,Hill Station;Cultural,Summer,Mar-Jun,10000,4,High,10-20,Siliguri,Families;Couples,Northeast
+Andaman Islands,Andaman & Nicobar,Beach;Adventure,Winter,Nov-Apr,20000,6,Medium,24-30,Chennai,Couples;Families,Island
+Lakshadweep,Lakshadweep,Beach;Nature,Winter,Oct-May,25000,5,Low,26-30,Kochi,Couples,Island
+Diu,Daman & Diu,Beach;Cultural,Winter,Nov-Feb,7000,2,Medium,24-30,Ahmedabad,Couples;Groups,West
+Pachmarhi,Madhya Pradesh,Hill Station;Nature,Summer,Apr-Jun,7000,3,Medium,18-28,Bhopal,Families,Central
+Khajuraho,Madhya Pradesh,Cultural,Winter,Oct-Mar,7000,2,Medium,15-28,Bhopal,Couples;Solo,Central
+Orchha,Madhya Pradesh,Cultural;Spiritual,Winter,Oct-Mar,5000,2,Medium,14-28,Bhopal,Families,Central
+Bandhavgarh,Madhya Pradesh,Wildlife,Winter,Nov-Apr,15000,3,Medium,12-30,Jabalpur,Families;Groups,Central
+Kanha,Madhya Pradesh,Wildlife,Winter,Nov-Apr,15000,3,Medium,12-30,Jabalpur,Families;Groups,Central
+Bhopal,Madhya Pradesh,Cultural;Nature,Winter,Oct-Mar,6000,2,Medium,15-30,Bhopal,Families,Central
+Pench,Madhya Pradesh,Wildlife,Winter,Nov-Apr,13000,3,Low,12-30,Nagpur,Families;Groups,Central
+Amarkantak,Madhya Pradesh,Spiritual;Nature,Summer,Mar-Jun,5000,2,Low,15-28,Jabalpur,Families;Pilgrims,Central
+Bhimbetka,Madhya Pradesh,Cultural,Winter,Oct-Mar,4000,1,Low,15-30,Bhopal,Solo,Central
+Mandu,Madhya Pradesh,Cultural,Winter,Oct-Mar,5000,2,Low,16-30,Indore,Couples;Solo,Central
+Rishikesh Camping,Uttarakhand,Adventure,Summer,Apr-Jun,8000,3,High,18-32,Dehradun,Groups;Solo,North
+Valley of Flowers,Uttarakhand,Nature,Summer,Jul-Aug,10000,4,Medium,8-18,Dehradun,Solo;Couples,North
+Chopta,Uttarakhand,Nature;Spiritual,Summer,May-Jun,7000,3,Low,5-18,Dehradun,Solo;Adventure,North
+Lansdowne,Uttarakhand,Hill Station,Summer,Apr-Jun,6000,2,Low,12-25,Dehradun,Couples,North
+Mcleod Ganj,Himachal Pradesh,Spiritual;Cultural,Summer,Mar-Jun,7000,4,High,12-22,Chandigarh,Solo;Couples,North
+Kufri,Himachal Pradesh,Hill Station,Summer,Apr-Jun,7000,2,Medium,8-20,Chandigarh,Families,North
+Bir Billing,Himachal Pradesh,Adventure,Summer,Apr-Jun,9000,3,Medium,12-22,Chandigarh,Solo;Adventure,North
+Tirthan Valley,Himachal Pradesh,Nature,Summer,Apr-Jun,8000,4,Low,10-22,Chandigarh,Couples;Solo,North
+Gulmarg,Jammu & Kashmir,Adventure;Hill Station,Summer,May-Jun,15000,4,Medium,5-18,Jammu,Couples;Families,North
+Pahalgam,Jammu & Kashmir,Nature;Hill Station,Summer,May-Jun,13000,4,Medium,8-22,Jammu,Couples;Families,North
+Srinagar,Jammu & Kashmir,Nature;Cultural,Summer,Apr-Jun,14000,5,High,12-28,Jammu,Couples;Families,North
+Sonamarg,Jammu & Kashmir,Nature;Adventure,Summer,May-Jun,12000,3,Medium,5-20,Jammu,Families;Couples,North
+Tarkarli,Maharashtra,Beach;Adventure,Winter,Nov-Mar,8000,3,Medium,24-32,Goa,Couples;Groups,West
+Panchgani,Maharashtra,Hill Station,Monsoon,Jun-Sep,6000,2,Medium,18-26,Pune,Families,West
+Igatpuri,Maharashtra,Nature;Spiritual,Monsoon,Jun-Sep,5000,2,Medium,20-28,Mumbai,Solo;Groups,West
+Mount Abu,Rajasthan,Hill Station,Summer,Apr-Jun,7000,3,Medium,18-28,Ahmedabad,Families,West

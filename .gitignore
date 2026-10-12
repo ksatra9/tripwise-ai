@@ -1,0 +1,31 @@
+
+# Secrets and environment variables
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.pytest_cache/
+
+# Node.js and frontend builds
+node_modules/
+dist/
+build/
+
+# Local databases and logs
+*.db
+*.sqlite
+*.sqlite3
+*.log
+
+# IDE and operating system files
+.vscode/
+.DS_Store
+Thumbs.db
+
+/RS MINI/

@@ -1,0 +1,15 @@
+{
+  "name": "tripwise-ai-root",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Personalized Travel Itinerary Recommendation System",
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "backend": "python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload",
+    "frontend": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "test": "npm --prefix frontend test",
+    "test:backend": "python -m pytest backend",
+    "test:frontend": "npm --prefix frontend test"
+  }
+}
