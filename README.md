@@ -321,3 +321,21 @@ The application is a separate FastAPI API and Vite static frontend. The Vite `/a
 The backend creates its tables and loads demo seed records during startup. The default SQLite file is at the repository root for local use. For hosted deployment, provide a persistent volume and set `DATABASE_URL` to its SQLite path (for example, `sqlite:////var/data/travel_app.db`), or configure a supported SQLAlchemy database URL. Ephemeral container filesystems can lose SQLite data on restart. Start the API with `python -m uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT`; the frontend static output is produced by `cd frontend && npm ci && npm run build` and is in `frontend/dist`. Set `GEMINI_API_KEY` only if using Gemini-assisted extraction/explanations; deterministic fallback remains available without it.
 
 A simple low-cost hosting layout is one static frontend service plus one small Python web service, with a persistent disk for SQLite if the free/low-cost tier supports it. Configure the frontend API URL and backend CORS origin as above. Confirm each provider's current pricing, sleep behavior, and persistent storage limits before choosing a plan. No deployment has been performed from this repository.
+
+
+## 📸 Screenshots
+
+### Trip Recommendation
+![TripWise AI - Trip Recommendation](screenshots/home.png)
+
+### Budget Breakdown
+![TripWise AI - Budget Breakdown](screenshots/budget-breakdown.png)
+(screenshots/budget-breakdown1.png)
+
+## 🌐 Live Demo
+
+[**Try TripWise AI**](https://tripwise-ai-1-qaoc.onrender.com)
+
+## 💻 Source Code
+
+[View TripWise AI on GitHub](https://github.com/ksatra9/tripwise-ai)
