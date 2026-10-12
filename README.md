@@ -310,9 +310,12 @@ Verifies:
   "alternatives": [],
   "ai_explanation": "We recommend Rishikesh, Uttarakhand as the ideal match for your 3-day trip from Delhi with 2 travellers. The total estimated trip cost is ₹15,356, leaving a safe financial headroom of ₹4,644 within your ₹20,000 budget.",
   "disclaimer": "Estimated prices; confirm before booking. All hotel, restaurant, and transport rates are sample or historical estimates, not live verified bookable quotes."
+
+
+
+
 }
 ```
-
 
 ## Production Configuration and Deployment
 
@@ -321,3 +324,7 @@ The application is a separate FastAPI API and Vite static frontend. The Vite `/a
 The backend creates its tables and loads demo seed records during startup. The default SQLite file is at the repository root for local use. For hosted deployment, provide a persistent volume and set `DATABASE_URL` to its SQLite path (for example, `sqlite:////var/data/travel_app.db`), or configure a supported SQLAlchemy database URL. Ephemeral container filesystems can lose SQLite data on restart. Start the API with `python -m uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT`; the frontend static output is produced by `cd frontend && npm ci && npm run build` and is in `frontend/dist`. Set `GEMINI_API_KEY` only if using Gemini-assisted extraction/explanations; deterministic fallback remains available without it.
 
 A simple low-cost hosting layout is one static frontend service plus one small Python web service, with a persistent disk for SQLite if the free/low-cost tier supports it. Configure the frontend API URL and backend CORS origin as above. Confirm each provider's current pricing, sleep behavior, and persistent storage limits before choosing a plan. No deployment has been performed from this repository.
+
+###TripWise AI — Live Demo
+
+https://tripwise-ai-1-qaoc.onrender.com/
