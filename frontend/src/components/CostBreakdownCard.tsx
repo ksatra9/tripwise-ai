@@ -19,6 +19,13 @@ export const CostBreakdownCard: React.FC<CostBreakdownCardProps> = ({
 }) => {
   const percentUsed = Math.min(100, Math.round((cost.total_trip_cost_inr / cost.budget_inr) * 100));
 
+  const expenseItems = cost.items.filter(
+    (item) => !item.category.toLowerCase().includes('contingency')
+  );
+  const contingencyItem = cost.items.find(
+    (item) => item.category.toLowerCase().includes('contingency')
+  );
+
   return (
     <div className="bg-white rounded-2xl border border-stone-200 card-shadow p-5 sm:p-6 mb-8">
       
@@ -83,7 +90,7 @@ export const CostBreakdownCard: React.FC<CostBreakdownCardProps> = ({
             </tr>
           </thead>
           <tbody className="divide-y divide-stone-100">
-            {cost.items.map((item, idx) => (
+            {expenseItems.map((item, idx) => (
               <tr key={idx} className="hover:bg-stone-50/60 transition-colors">
                 <td className="py-3 font-semibold text-slate-900 pr-3">
                   {item.category}
@@ -108,20 +115,33 @@ export const CostBreakdownCard: React.FC<CostBreakdownCardProps> = ({
           </tbody>
           <tfoot>
             <tr className="border-t-2 border-stone-200 font-semibold text-slate-700">
-              <td colSpan={3} className="pt-3">Trip Subtotal</td>
-              <td className="pt-3 text-right font-mono text-slate-800">
+              <td className="pt-3 font-semibold">Trip Subtotal</td>
+              <td className="pt-3 text-slate-500 font-mono text-[11px]">Sum of 5 base expense categories</td>
+              <td className="pt-3">
+                <span className="text-[10px] text-slate-400 font-medium">Aggregated</span>
+              </td>
+              <td className="pt-3 text-right font-mono text-slate-800 font-bold">
                 ₹{cost.subtotal_inr.toLocaleString()}
               </td>
             </tr>
-            <tr className="text-amber-800 font-semibold">
-              <td colSpan={3} className="pt-1.5">Mandatory Emergency Contingency (10%)</td>
-              <td className="pt-1.5 text-right font-mono text-amber-700">
+            <tr className="text-amber-800 font-semibold bg-amber-50/30">
+              <td className="py-2.5">Mandatory Emergency Contingency (10%)</td>
+              <td className="py-2.5 text-slate-600 font-mono text-[11px]">
+                {contingencyItem?.multiplier_description || "Mandatory 10% safety buffer for unplanned delays or surge pricing"}
+              </td>
+              <td className="py-2.5">
+                <DataDisclaimerBadge
+                  status={contingencyItem?.data_status || 'calculated'}
+                  compact
+                />
+              </td>
+              <td className="py-2.5 text-right font-mono text-amber-700 font-bold">
                 +₹{cost.contingency_inr.toLocaleString()}
               </td>
             </tr>
-            <tr className="text-base font-extrabold text-slate-900">
-              <td colSpan={3} className="pt-2 text-slate-900">Final Estimated Group Total</td>
-              <td className="pt-2 text-right font-mono text-teal-800 text-lg">
+            <tr className="border-t border-stone-200 text-base font-extrabold text-slate-900">
+              <td colSpan={3} className="pt-3 text-slate-900">Final Estimated Group Total (Subtotal + Contingency)</td>
+              <td className="pt-3 text-right font-mono text-teal-800 text-lg">
                 ₹{cost.total_trip_cost_inr.toLocaleString()}
               </td>
             </tr>

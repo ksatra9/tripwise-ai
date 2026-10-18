@@ -1,4 +1,5 @@
 import math
+import re
 import logging
 from typing import List, Dict, Any, Optional, Tuple
 from sqlalchemy.orm import Session
@@ -19,6 +20,32 @@ from backend.app.services.cost_calculator import calculate_trip_cost
 from backend.app.services.itinerary_builder import build_daily_itinerary
 
 logger = logging.getLogger("tripwise.engine")
+
+
+def classify_hotel_tier(hotel: Hotel) -> str:
+    """
+    Consistent, mutually exclusive hotel classification rule:
+    1. Prefer explicit, valid database tier (Budget, Mid-range, Luxury).
+    2. Fallback to star rating (5-star -> Luxury, 4-star -> Mid-range).
+    3. Fallback to price thresholds (>= 6500 -> Luxury, >= 2600 -> Mid-range, else Budget).
+    """
+    if hotel.tier:
+        tier_clean = hotel.tier.strip().title()
+        if tier_clean in ["Luxury", "Mid-Range", "Mid-range", "Budget"]:
+            return "Mid-range" if tier_clean in ["Mid-Range", "Mid-range"] else tier_clean
+
+    stars_str = (hotel.stars or "").lower()
+    if "5-star" in stars_str:
+        return "Luxury"
+    elif "4-star" in stars_str:
+        return "Mid-range"
+
+    amount = int(hotel.amount_inr or 0)
+    if amount >= 6500:
+        return "Luxury"
+    elif amount >= 2600:
+        return "Mid-range"
+    return "Budget"
 
 
 def find_matching_destination(db: Session, dest_name: str) -> Optional[Destination]:
@@ -249,7 +276,12 @@ def calculate_candidate_score(
 
     if preferences.interests:
         for interest in preferences.interests:
-            if interest.lower() in combined_tags:
+            term = interest.lower().strip()
+            if not term:
+                continue
+            # Regex word-boundary matching to avoid substring false positives (e.g. 'art' matching 'party')
+            pattern = r'\b' + re.escape(term) + r'\b'
+            if re.search(pattern, combined_tags):
                 interest_hits += 1
                 matched_interests.append(interest.title())
         if interest_hits > 0:
@@ -304,7 +336,11 @@ def calculate_candidate_score(
     score_breakdown["tier_fit"] = round(tier_score, 1)
 
     # 3. Budget Headroom & Safety Reserve (20%)
-    remaining_ratio = cost_breakdown.remaining_budget_inr / cost_breakdown.budget_inr
+    if cost_breakdown.budget_inr > 0:
+        remaining_ratio = cost_breakdown.remaining_budget_inr / cost_breakdown.budget_inr
+    else:
+        remaining_ratio = 0.0
+
     if 0.05 <= remaining_ratio <= 0.35:
         budget_score = 95.0
     elif remaining_ratio > 0.35:
@@ -337,8 +373,9 @@ def calculate_candidate_score(
     season_score = 90.0 if season_matched else 70.0
     score_breakdown["season_suitability"] = round(season_score, 1)
 
-    # Variety is represented in the selected itinerary's available attractions.
-    # Keep it explicit in the audit breakdown so the reported factors match tests/docs.
+    # Note: Itinerary variety is an informational metric reported in score_breakdown,
+    # while the 5 core factors (interest 35%, tier fit 25%, budget 20%, convenience 10%, season 10%)
+    # sum to 100% of the composite recommendation score.
     itinerary_variety = min(100.0, float(len(destination.attractions or [])) * 20.0)
     score_breakdown["itinerary_variety"] = round(itinerary_variety, 1)
 
@@ -454,10 +491,18 @@ def find_recommendations(
         attractions = db.query(Attraction).filter(Attraction.destination_id == dest_id).all()
         restaurants = db.query(Restaurant).filter(Restaurant.destination_id == dest_id).all()
 
-        # Categorize hotels
-        luxury_hotels = [h for h in hotels if h.tier == "Luxury" or "5-star" in h.stars or h.amount_inr >= 6500]
-        mid_hotels = [h for h in hotels if h.tier == "Mid-range" or "4-star" in h.stars or (2600 <= h.amount_inr < 6500)]
-        budget_hotels = [h for h in hotels if h.tier == "Budget" or h.amount_inr < 2600]
+        # Categorize hotels into strictly mutually exclusive tiers
+        luxury_hotels = []
+        mid_hotels = []
+        budget_hotels = []
+        for h in hotels:
+            tier = classify_hotel_tier(h)
+            if tier == "Luxury":
+                luxury_hotels.append(h)
+            elif tier == "Mid-range":
+                mid_hotels.append(h)
+            else:
+                budget_hotels.append(h)
 
         # Categorize transport
         flight_routes = [r for r in dest_routes if "flight" in r.mode.lower()]
@@ -485,26 +530,31 @@ def find_recommendations(
 
         # Determine hotel candidates order based on target tier
         if target_tier == "Luxury":
-            hotel_candidates = (
+            raw_hotel_order = (
                 sorted(luxury_hotels, key=lambda h: h.amount_inr, reverse=True) +
                 sorted(mid_hotels, key=lambda h: h.amount_inr, reverse=True) +
                 sorted(budget_hotels, key=lambda h: h.amount_inr, reverse=True)
             )
         elif target_tier == "Mid-range":
-            hotel_candidates = (
+            raw_hotel_order = (
                 sorted(mid_hotels, key=lambda h: h.amount_inr, reverse=True) +
                 sorted(luxury_hotels, key=lambda h: h.amount_inr) +
                 sorted(budget_hotels, key=lambda h: h.amount_inr, reverse=True)
             )
         else: # Budget
-            hotel_candidates = (
+            raw_hotel_order = (
                 sorted(budget_hotels, key=lambda h: h.amount_inr) +
                 sorted(mid_hotels, key=lambda h: h.amount_inr) +
                 sorted(luxury_hotels, key=lambda h: h.amount_inr)
             )
 
-        if not hotel_candidates:
-            hotel_candidates = hotels
+        # Deduplicate hotel candidates preserving target tier priority order
+        seen_hotel_ids = set()
+        hotel_candidates = []
+        for h in (raw_hotel_order or hotels):
+            if h.id not in seen_hotel_ids:
+                seen_hotel_ids.add(h.id)
+                hotel_candidates.append(h)
 
         # Find best affordable combination for this destination
         best_candidate_for_dest: Optional[ItineraryCandidate] = None
@@ -598,8 +648,8 @@ def find_recommendations(
                             data_status=h.data_status,
                             is_sample_entry=h.is_sample_entry
                         ),
-                        hotel_rooms_count=cost.items[1].units // max(1, days - 1),
-                        hotel_nights_count=max(1, days - 1),
+                        hotel_rooms_count=cost.rooms_needed,
+                        hotel_nights_count=cost.nights,
                         transport_option=TransportRouteOut(
                             id=transport.id,
                             origin_city=transport.origin_city,
@@ -669,25 +719,107 @@ def find_recommendations(
             candidate_results.append(best_candidate_for_dest)
             diag["affordable_candidates_generated"] += 1
 
-    # 4. Handle no affordable options
+    # 4. Handle no affordable options with dynamic recalculation
     if not candidate_results:
-        if preferred_dest_min_cost < float("inf") and preferred_dest_name:
-            diff_pref = int(preferred_dest_min_cost - budget)
-            suggestions = [
-                f"A complete trip to {preferred_dest_name} from {origin_norm} starts at ~₹{int(preferred_dest_min_cost):,} for {travellers} traveller(s) over {days} days.",
-                f"Suggestion 1: Increase your budget by ₹{diff_pref:,} to unlock {preferred_dest_name}.",
-                f"Suggestion 2: Reduce trip duration to {max(2, days - 1)} days to save on accommodation and dining.",
-                f"Suggestion 3: Opt for superfast sleeper trains rather than flights."
-            ]
+        focal_dest_name = preferred_dest_name if (preferred_dest_min_cost < float("inf") and preferred_dest_name) else cheapest_dest_name
+        focal_min_cost = preferred_dest_min_cost if (preferred_dest_min_cost < float("inf") and preferred_dest_name) else min_observed_trip_cost
+        diff = max(0, int(focal_min_cost - budget)) if focal_min_cost < float("inf") else 5000
+
+        suggestions: List[str] = []
+        if focal_dest_name and focal_min_cost < float("inf"):
+            suggestions.append(
+                f"A complete trip to {focal_dest_name} from {origin_norm} starts at ~₹{int(focal_min_cost):,} for {travellers} traveller(s) over {days} days."
+            )
+            suggestions.append(
+                f"Suggestion 1: Increase your budget by ₹{diff:,} to unlock {focal_dest_name}."
+            )
         else:
-            diff = int(min_observed_trip_cost - budget) if min_observed_trip_cost < float("inf") else 5000
-            suggestions = [
-                f"No complete itinerary from {origin_norm} fits within ₹{budget:,} for {travellers} traveller(s) over {days} days.",
-                f"The most affordable complete option ({cheapest_dest_name or 'nearby circuit'}) starts at ~₹{int(min_observed_trip_cost):,}.",
-                f"Suggestion 1: Increase your budget by ₹{diff:,} to unlock {cheapest_dest_name or 'destinations'}.",
-                f"Suggestion 2: Reduce trip duration to {max(2, days - 1)} days to save on accommodation and dining.",
-                f"Suggestion 3: Opt for superfast sleeper trains rather than flights."
+            suggestions.append(
+                f"No complete itinerary from {origin_norm} fits within ₹{budget:,} for {travellers} traveller(s) over {days} days."
+            )
+            suggestions.append(
+                "Suggestion 1: Increase your budget to meet minimum route and accommodation rates."
+            )
+
+        # Dynamic recalculation for duration reduction and cheaper transport modes
+        focal_dest = find_matching_destination(db, focal_dest_name) if focal_dest_name else None
+        if focal_dest:
+            focal_routes = [r for r in routes if r.destination_id == focal_dest.id]
+            focal_hotels = db.query(Hotel).filter(Hotel.destination_id == focal_dest.id).all()
+            focal_attractions = db.query(Attraction).filter(Attraction.destination_id == focal_dest.id).all()
+            focal_restaurants = db.query(Restaurant).filter(Restaurant.destination_id == focal_dest.id).all()
+
+            cheapest_route = min(focal_routes, key=lambda r: r.amount_inr) if focal_routes else None
+            cheapest_hotel = min(focal_hotels, key=lambda h: h.amount_inr) if focal_hotels else None
+
+            # Suggestion 2: Reduced duration recalculation
+            if days > 1 and cheapest_route and cheapest_hotel:
+                shorter_days = max(1, days - 1)
+                recalc_shorter = calculate_trip_cost(
+                    transport=cheapest_route,
+                    hotel=cheapest_hotel,
+                    days=shorter_days,
+                    travellers=travellers,
+                    budget_inr=budget,
+                    restaurants=focal_restaurants,
+                    attractions=focal_attractions
+                )
+                if recalc_shorter.is_within_budget:
+                    suggestions.append(
+                        f"Suggestion 2 (Calculated Solution): Reducing trip duration to {shorter_days} days lowers total estimated cost to ₹{recalc_shorter.total_trip_cost_inr:,}, which fits within your ₹{budget:,} budget."
+                    )
+                else:
+                    shortfall = recalc_shorter.total_trip_cost_inr - budget
+                    suggestions.append(
+                        f"Suggestion 2 (General Suggestion): Reducing trip duration to {shorter_days} days lowers total estimated cost to ~₹{recalc_shorter.total_trip_cost_inr:,} (shortfall: ₹{shortfall:,})."
+                    )
+            else:
+                suggestions.append(
+                    "Suggestion 2 (General Suggestion): Reduce trip duration to save on accommodation and dining."
+                )
+
+            # Suggestion 3: Cheaper transport option verification
+            flight_routes = [r for r in focal_routes if "flight" in r.mode.lower()]
+            train_or_bus_routes = [
+                r for r in focal_routes
+                if "train" in r.mode.lower() or "bus" in r.mode.lower() or "rail" in r.mode.lower()
             ]
+
+            if flight_routes and train_or_bus_routes and cheapest_hotel:
+                cheapest_land_route = min(train_or_bus_routes, key=lambda r: r.amount_inr)
+                recalc_transport = calculate_trip_cost(
+                    transport=cheapest_land_route,
+                    hotel=cheapest_hotel,
+                    days=days,
+                    travellers=travellers,
+                    budget_inr=budget,
+                    restaurants=focal_restaurants,
+                    attractions=focal_attractions
+                )
+                if recalc_transport.is_within_budget:
+                    suggestions.append(
+                        f"Suggestion 3 (Calculated Solution): Switching from flight to {cheapest_land_route.mode} (₹{cheapest_land_route.amount_inr:,} round-trip) lowers complete cost to ₹{recalc_transport.total_trip_cost_inr:,}, fitting your ₹{budget:,} budget."
+                    )
+                else:
+                    suggestions.append(
+                        f"Suggestion 3 (General Suggestion): Choosing {cheapest_land_route.mode} at ₹{cheapest_land_route.amount_inr:,} per person round-trip saves on transit compared to flights."
+                    )
+            elif cheapest_route:
+                suggestions.append(
+                    f"Suggestion 3 (General Suggestion): The lowest available round-trip fare from {origin_norm} to {focal_dest_name} is {cheapest_route.mode} at ₹{cheapest_route.amount_inr:,} per person."
+                )
+            else:
+                suggestions.append(
+                    "Suggestion 3 (General Suggestion): Opt for superfast sleeper trains or intercity buses where available."
+                )
+        else:
+            suggestions.append(
+                f"Suggestion 2 (General Suggestion): Reduce trip duration to {max(1, days - 1)} days to save on accommodation and dining."
+            )
+            suggestions.append(
+                "Suggestion 3 (General Suggestion): Opt for superfast sleeper trains rather than flights."
+            )
+
         diag["status"] = "no_affordable_options"
         err_res = (None, [], suggestions)
         return (*err_res, diag) if return_diagnostics else err_res

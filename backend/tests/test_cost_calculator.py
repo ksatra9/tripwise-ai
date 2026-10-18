@@ -101,3 +101,81 @@ def test_integer_arithmetic():
     assert isinstance(cost.contingency_inr, int)
     assert isinstance(cost.total_trip_cost_inr, int)
     assert isinstance(cost.remaining_budget_inr, int)
+
+def test_exact_budget_boundary():
+    route = TransportRoute(amount_inr=1000, mode="Train")
+    hotel = Hotel(amount_inr=1000, name="Budget Inn")
+    # 2 travellers, 2 days (1 night), 1 room
+    # Transport = 1000 * 2 = 2000
+    # Hotel = 1000 * 1 * 1 = 1000
+    # Food (default 250) = 250 * 3 * 2 * 2 = 3000
+    # Attractions = 0
+    # Local transport = 700 * 2 = 1400
+    # Subtotal = 2000 + 1000 + 3000 + 0 + 1400 = 7400
+    # Contingency = ceil(7400 * 0.10) = 740
+    # Total = 8140
+    exact_cost = calculate_trip_cost(
+        transport=route,
+        hotel=hotel,
+        days=2,
+        travellers=2,
+        budget_inr=8140,
+        restaurants=[],
+        attractions=[]
+    )
+    assert exact_cost.total_trip_cost_inr == 8140
+    assert exact_cost.remaining_budget_inr == 0
+    assert exact_cost.is_within_budget is True
+
+def test_one_rupee_over_budget_boundary():
+    route = TransportRoute(amount_inr=1000, mode="Train")
+    hotel = Hotel(amount_inr=1000, name="Budget Inn")
+    # Total = 8140, Budget = 8139
+    over_cost = calculate_trip_cost(
+        transport=route,
+        hotel=hotel,
+        days=2,
+        travellers=2,
+        budget_inr=8139,
+        restaurants=[],
+        attractions=[]
+    )
+    assert over_cost.total_trip_cost_inr == 8140
+    assert over_cost.remaining_budget_inr == -1
+    assert over_cost.is_within_budget is False
+
+def test_missing_restaurants_and_attractions():
+    route = TransportRoute(amount_inr=1000, mode="Train")
+    hotel = Hotel(amount_inr=1000, name="Budget Inn")
+    cost_none = calculate_trip_cost(
+        transport=route,
+        hotel=hotel,
+        days=3,
+        travellers=2,
+        budget_inr=20000,
+        restaurants=None,
+        attractions=None
+    )
+    # Default meal rate is 250 -> 250 * 3 meals * 2 travellers * 3 days = 4500
+    assert cost_none.food_inr == 4500
+    assert cost_none.attractions_inr == 0
+    # Check contingency data status is 'calculated', not 'verified_snapshot'
+    contingency_item = [i for i in cost_none.items if "Contingency" in i.category][0]
+    assert contingency_item.data_status == "calculated"
+
+def test_invalid_input_guards():
+    route = TransportRoute(amount_inr=1000, mode="Train")
+    hotel = Hotel(amount_inr=1000, name="Budget Inn")
+    # Non-positive days and travellers should be clamped safely to at least 1
+    cost = calculate_trip_cost(
+        transport=route,
+        hotel=hotel,
+        days=0,
+        travellers=-1,
+        budget_inr=-500
+    )
+    assert cost.total_trip_cost_inr > 0
+    assert cost.budget_inr == 0
+    assert cost.is_within_budget is False
+    assert cost.remaining_budget_inr == 0 - cost.total_trip_cost_inr
+

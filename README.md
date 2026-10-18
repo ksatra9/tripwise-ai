@@ -167,7 +167,7 @@ python import_kaggle_data.py
 
 ## Running Automated Tests
 
-### Backend Tests (24 pytest tests)
+### Backend Tests (35 pytest tests)
 ```bash
 python -m pytest backend/tests
 ```
@@ -277,8 +277,8 @@ Verifies:
           "multiplier_description": "Mandatory 10% safety buffer for unplanned delays or surge pricing",
           "total_inr": 1396,
           "price_unit": "total_reserve",
-          "data_status": "verified_snapshot",
-          "verification_note": "Financial safety margin calculated mathematically."
+          "data_status": "calculated",
+          "verification_note": "Financial safety reserve calculated mathematically (10% of subtotal)."
         }
       ]
     },
@@ -310,38 +310,41 @@ Verifies:
   "alternatives": [],
   "ai_explanation": "We recommend Rishikesh, Uttarakhand as the ideal match for your 3-day trip from Delhi with 2 travellers. The total estimated trip cost is ₹15,356, leaving a safe financial headroom of ₹4,644 within your ₹20,000 budget.",
   "disclaimer": "Estimated prices; confirm before booking. All hotel, restaurant, and transport rates are sample or historical estimates, not live verified bookable quotes."
-
-
-
-
 }
 ```
 
-## Production Configuration and Deployment
+---
 
-The application is a separate FastAPI API and Vite static frontend. The Vite `/api` proxy only applies during development; production frontend deployments need either a same-origin reverse proxy or `VITE_API_BASE_URL` set at build time to the public API origin (for example, `https://api.example.com`). Set the backend `CORS_ORIGINS` environment variable to a JSON array containing the exact frontend origin(s), such as `["https://tripwise.example.com"]`. Wildcard origins are not enabled. Keep API keys in the backend host's environment settings; never commit `.env` files.
+## 🎯 Technical Demo Checklist
 
-The backend creates its tables and loads demo seed records during startup. The default SQLite file is at the repository root for local use. For hosted deployment, provide a persistent volume and set `DATABASE_URL` to its SQLite path (for example, `sqlite:////var/data/travel_app.db`), or configure a supported SQLAlchemy database URL. Ephemeral container filesystems can lose SQLite data on restart. Start the API with `python -m uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT`; the frontend static output is produced by `cd frontend && npm ci && npm run build` and is in `frontend/dist`. Set `GEMINI_API_KEY` only if using Gemini-assisted extraction/explanations; deterministic fallback remains available without it.
+Use these verified scenarios to demonstrate TripWise AI during technical presentations:
 
-A simple low-cost hosting layout is one static frontend service plus one small Python web service, with a persistent disk for SQLite if the free/low-cost tier supports it. Configure the frontend API URL and backend CORS origin as above. Confirm each provider's current pricing, sleep behavior, and persistent storage limits before choosing a plan. No deployment has been performed from this repository.
+| Scenario | Input Prompt | Expected System Behavior | What to Highlight in Presentation |
+| :--- | :--- | :--- | :--- |
+| **1. Standard Affordable Trip** | `"I am travelling from Delhi with one friend for 3 days. Our total budget is ₹20,000. We like nature and local food."` | Returns Rishikesh or Jaipur within budget (~₹15,356 total cost; ~₹4,644 buffer remaining). | Highlight deterministic itemized arithmetic: 1 room for 2 pax, 2 nights stay, round-trip transport for 2, 18 meals, and pure integer 10% contingency buffer. |
+| **2. Tight Budget Feasibility** | `"Trip from Mumbai for 4 travellers for 3 days with ₹25,000 budget."` | Rejects higher-cost options (like Mahabaleshwar @ ₹25,569) and selects affordable budget options (Shimla @ ₹23,149 via sleeper bus and budget hotel). | Highlight hard budget cutoff: over-budget destinations are rejected before scoring; affordability is never compromised by subjective ratings. |
+| **3. Impossible Budget / Suggestions** | `"We are 4 friends travelling from Mumbai for 3 days with only ₹10,000 total budget."` | Returns `status: "no_affordable_options"` with actionable, dynamically recalculated alternatives. | Highlight dynamic recalculation: Suggestion 1 computes exact shortfall; Suggestion 2 recalculates cost for 2 days; Suggestion 3 verifies cheaper transport modes from real database records. |
+| **4. Targeted Clarification** | `"I want to plan a weekend trip with my family."` | Returns `status: "clarification_needed"` asking **exactly ONE targeted question** (e.g. starting city and total budget). | Highlight conversational intelligence without LLM hallucination: missing critical fields pause execution cleanly rather than making arbitrary guesses. |
 
-<<<<<<< HEAD
+---
 
-## 📸 Screenshots
+## ⚙️ CI/CD Pipeline
 
-### Trip Recommendation
-![TripWise AI - Trip Recommendation](screenshots/home.png)
+A lightweight, automated GitHub Actions workflow is implemented at `.github/workflows/ci.yml`:
+- **Triggers**: On pull requests and pushes to `main`.
+- **Backend Job**: Sets up Python 3.12, installs dependencies from `backend/requirements.txt`, and runs all 35 pytest unit and integration tests.
+- **Frontend Job**: Sets up Node.js 20, installs dependencies via `npm ci`, runs 5 Vitest tests, and verifies the production build (`tsc && vite build`).
+- **Security & Privacy**: Zero credentials stored in code; runs safely with mock/empty API keys via deterministic fallback.
 
-### Budget Breakdown
-![TripWise AI - Budget Breakdown](screenshots/budget-breakdown.png)
-(screenshots/budget-breakdown1.png)
+---
 
+## 📸 Screenshots & Links
 
-## 💻 Source Code
+### Trip Recommendation & Budget Breakdown
+- Trip Recommendations: [screenshots/home.png](file:///c:/Users/kavya/Downloads/RS%20MINI/screenshots/home.png)
+- Itemized Budget Breakdown: [screenshots/budget-breakdown.png](file:///c:/Users/kavya/Downloads/RS%20MINI/screenshots/budget-breakdown.png)
 
-[View TripWise AI on GitHub](https://github.com/ksatra9/tripwise-ai)
-=======
-**TripWise AI — Live Demo**
+### Live Demo & Repository
+- **Source Code**: [ksatra9/tripwise-ai on GitHub](https://github.com/ksatra9/tripwise-ai)
+- **Live Deployment**: [TripWise AI on Render](https://tripwise-ai-1-qaoc.onrender.com/)
 
-https://tripwise-ai-1-qaoc.onrender.com/
->>>>>>> 8d732dcd952c2b88ec04f96cec9a6d09be68dc05

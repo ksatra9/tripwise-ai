@@ -117,3 +117,60 @@ def test_preferred_destination_manali(db_session):
     assert recommended is not None
     assert recommended.destination.name == "Manali"
 
+def test_hotel_tier_classification_mutual_exclusion():
+    from backend.app.services.recommendation_engine import classify_hotel_tier
+    # Conflicting case 1: explicitly marked Budget, but high amount
+    h1 = Hotel(tier="Budget", amount_inr=7500, stars="3-star")
+    assert classify_hotel_tier(h1) == "Budget"
+
+    # Conflicting case 2: explicitly marked Luxury, but modest amount
+    h2 = Hotel(tier="Luxury", amount_inr=1800, stars="5-star")
+    assert classify_hotel_tier(h2) == "Luxury"
+
+    # Missing tier: derived from stars/amount
+    h3 = Hotel(tier=None, amount_inr=8000, stars="5-star")
+    assert classify_hotel_tier(h3) == "Luxury"
+
+    h4 = Hotel(tier=None, amount_inr=3200, stars="4-star")
+    assert classify_hotel_tier(h4) == "Mid-range"
+
+    h5 = Hotel(tier=None, amount_inr=1500, stars="2-star")
+    assert classify_hotel_tier(h5) == "Budget"
+
+def test_recommendation_determinism(db_session):
+    prefs = ExtractedTripPreferences(
+        origin_city="Delhi",
+        total_budget_inr=22000,
+        duration_days=3,
+        travellers_count=2,
+        interests=["heritage"],
+        is_complete=True
+    )
+    rec1, alt1, _ = find_recommendations(db_session, prefs)
+    rec2, alt2, _ = find_recommendations(db_session, prefs)
+
+    assert rec1 is not None and rec2 is not None
+    assert rec1.destination.id == rec2.destination.id
+    assert rec1.recommended_hotel.id == rec2.recommended_hotel.id
+    assert rec1.transport_option.id == rec2.transport_option.id
+    assert rec1.score == rec2.score
+    assert rec1.cost_breakdown.total_trip_cost_inr == rec2.cost_breakdown.total_trip_cost_inr
+
+def test_hard_affordability_overrides_preference(db_session):
+    # User prefers Goa with an impossibly small budget of ₹5,000 for 4 people over 4 days
+    prefs = ExtractedTripPreferences(
+        origin_city="Delhi",
+        preferred_destination="Goa",
+        total_budget_inr=5000,
+        duration_days=4,
+        travellers_count=4,
+        is_complete=True
+    )
+    recommended, alternatives, suggestions = find_recommendations(db_session, prefs)
+    # Even though Goa is requested, over-budget trip MUST NOT be recommended
+    assert recommended is None
+    assert len(suggestions) > 0
+    # Suggestions should mention Goa and not produce negative shortfall
+    assert any("Goa" in s for s in suggestions)
+
+

@@ -1,4 +1,4 @@
-export type DataStatus = 'demo' | 'historical' | 'verified_snapshot' | 'live_quote';
+export type DataStatus = 'demo' | 'historical' | 'verified_snapshot' | 'live_quote' | 'calculated';
 
 export interface ExtractedTripPreferences {
   origin_city?: string;

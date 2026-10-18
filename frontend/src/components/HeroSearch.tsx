@@ -60,7 +60,7 @@ export const HeroSearch: React.FC<HeroSearchProps> = ({
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
           Describe your dream trip. <br className="hidden sm:inline" />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-700 via-teal-600 to-amber-600">
-            We guarantee it fits your budget.
+            We calculate options that fit your budget.
           </span>
         </h1>
         <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto">

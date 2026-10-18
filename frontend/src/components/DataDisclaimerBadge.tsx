@@ -27,6 +27,9 @@ export const DataDisclaimerBadge: React.FC<DataDisclaimerBadgeProps> = ({
   } else if (status === 'live_quote') {
     badgeLabel = "Live Quote";
     badgeColor = "bg-teal-50 text-teal-800 border-teal-200";
+  } else if (status === 'calculated') {
+    badgeLabel = "Calculated Reserve";
+    badgeColor = "bg-purple-50 text-purple-800 border-purple-200";
   }
 
   if (compact) {

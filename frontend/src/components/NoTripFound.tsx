@@ -17,10 +17,10 @@ export const NoTripFound: React.FC<NoTripFoundProps> = ({
       </div>
 
       <h3 className="text-2xl font-bold text-slate-900">
-        No Verified Trip Fits This Budget
+        No Estimated Option Fits This Budget
       </h3>
       <p className="text-sm text-slate-600 mt-2 max-w-lg mx-auto leading-relaxed">
-        We refuse to fabricate impossible rates or cut corners on your safety margin. After calculating round-trip transit, room capacity, meals, and local commuting, no complete itinerary meets your exact criteria.
+        Based on our sample dataset estimates, no complete itinerary — covering round-trip transit, room capacity, meals, and local commuting — fits within your stated budget. Try adjusting your criteria below.
       </p>
 
       {/* Suggested adjustments */}

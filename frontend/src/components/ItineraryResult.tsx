@@ -47,7 +47,7 @@ export const ItineraryResult: React.FC<ItineraryResultProps> = ({
 
             <div className="flex items-center gap-2 text-xs text-slate-300">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>Hard Affordability Verified</span>
+              <span>Estimated Budget Fit</span>
             </div>
           </div>
 

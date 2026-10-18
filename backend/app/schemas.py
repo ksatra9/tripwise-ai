@@ -42,6 +42,8 @@ class TripCostBreakdown(BaseModel):
     budget_inr: int
     remaining_budget_inr: int
     is_within_budget: bool
+    rooms_needed: int = 1
+    nights: int = 1
     items: List[CostBreakdownItem] = Field(default_factory=list)
 
 class TransportRouteOut(BaseModel):
